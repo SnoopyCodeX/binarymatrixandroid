@@ -34,7 +34,7 @@ public class BinaryMatrix extends View
     private int fontSize = 12;
     private int colSize;
     private int[] cols;
-    private Paint txt, bg, bgBmp, initBg;
+    private Paint txt, bg, bgBmp, initBg, name;
 	private boolean showTextAnim = true;
 	
 	String[] messages = {
@@ -54,7 +54,7 @@ public class BinaryMatrix extends View
 	
 	int index = 0;
 	int step = 1;
-	int delay = 20;
+	int delay = 16;
 	String text = messages[index];
 	int x = 1 * fontSize;
 	int y = 1 * fontSize;
@@ -69,10 +69,17 @@ public class BinaryMatrix extends View
         initBg.setStyle(Paint.Style.FILL);
 		
         txt = new Paint();
-        txt.setStyle(Paint.Style.FILL);
+        txt.setAntiAlias(true);
         txt.setColor(Color.GREEN);
         txt.setTextSize(fontSize);
 		txt.setTypeface(Typeface.MONOSPACE);
+		
+		name = new Paint();
+		name.setColor(Color.GREEN);
+		name.setTextSize(fontSize * 1.86f);
+		name.setAntiAlias(true);
+		name.setLetterSpacing((fontSize * 0.03f) + 0.2f);
+		name.setTypeface(Typeface.MONOSPACE);
 		
         bg = new Paint();
         bg.setColor(Color.BLACK);
@@ -103,8 +110,11 @@ public class BinaryMatrix extends View
         for (int i = 0; i < cols.length; i++) 
 		{
             canvas.drawText("" + rand.nextInt(2), i * fontSize, cols[i] * fontSize, txt);
-
-            if (cols[i] * fontSize > height && Math.random() > 0.890)
+			
+			if(Math.random() > 0.998)
+				drawCenteredText(canvas, "SnoopyCodeX");
+			
+            if (cols[i] * fontSize > height && Math.random() > 0.975)
                 cols[i] = 0;
             cols[i]++;
         }
@@ -117,6 +127,19 @@ public class BinaryMatrix extends View
 		((ImageView) getRootView().findViewById(R.id.logo)).setVisibility(View.VISIBLE);
     }
 
+	private void drawCenteredText(Canvas canvas, String text)
+	{
+		Rect bounds = new Rect();
+		canvas.getClipBounds(bounds);
+		int cw = bounds.width();
+		int ch = bounds.height();
+		name.setTextAlign(Paint.Align.LEFT);
+		name.getTextBounds(text, 0, text.length(), bounds);
+		float xOff = cw / 2f - bounds.width() / 2f - bounds.left;
+		float yOff = ch / 2f + bounds.height() / 2f - bounds.bottom;
+		canvas.drawText(text, xOff, yOff, name);
+	}
+	
     @Override
     protected void onDraw(Canvas canvas)
 	{
